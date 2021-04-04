@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.projectA.mapper.BoardMapper">
+	
+	<insert id="insertBoard" parameterType="com.example.projectA.model.BoardDTO">
+	
+	DECLARE @V_notice_yn VARCHAR(5);
+	DECLARE @V_secret_yn VARCHAR(5);
+	SET @V_notice_yn = #{noticeYn};
+	SET @V_secret_yn = #{noticeYn};
+	
+		INSERT INTO tb_board(
+			  idx
+			, title
+			, content
+			, writer
+			, view_cnt
+			, notice_yn 
+			, secret_yn
+			, delete_yn
+			, insert_time
+			, update_time
+			, delete_time
+		) VALUES(
+			NEXT VALUE FOR SEQ_tb_board_SEQ
+			, #{title}
+			, #{content}
+			, #{writer}
+			, 0
+			, ISNULL(@V_notice_yn, 'N')
+			, ISNULL(@V_secret_yn, 'N')
+			, 'N'
+			, GETDATE()
+			, NULL
+			, NULL
+		)
+		
+	</insert>
+
+<select id="selectBoardDetail" parameterType="long" resultType="com.example.projectA.model.BoardDTO">
+		SELECT
+			  idx
+			, title
+			, content
+			, writer
+			, view_cnt
+			, notice_yn
+			, secret_yn
+			, delete_yn
+			, insert_time
+			, update_time
+			, delete_time
+		FROM
+			tb_board
+		WHERE
+			delete_yn = 'N'
+		AND
+			idx = #{idx}
+	</select>
+
+	<update id="updateBoard" parameterType="com.example.projectA.model.BoardDTO">
+		UPDATE tb_board
+		SET
+			  update_time 	= GETDATE()
+			, title 		= #{title}
+			, content 		= #{content}
+			, writer 		= #{writer}
+			, notice_yn 	= IFNULL(#{noticeYn}, 'N')
+			, secret_yn 	= IFNULL(#{secretYn}, 'N')
+		WHERE
+			idx = #{idx}
+	</update>
+
+	<update id="deleteBoard" parameterType="long">
+		UPDATE tb_board
+		SET
+			  delete_yn 	= 'Y'
+			, delete_time 	= GETDATE()
+		WHERE
+			idx = #{idx}
+	</update>
+
+	<select id="selectBoardList" parameterType="com.example.projectA.model.BoardDTO" resultType="com.example.projectA.model.BoardDTO">
+		SELECT
+			  idx
+			, title
+			, content
+			, writer
+			, view_cnt
+			, notice_yn
+			, secret_yn
+			, delete_yn
+			, insert_time
+			, update_time
+			, delete_time
+		FROM
+			tb_board
+		WHERE
+			delete_yn = 'N'
+		ORDER BY
+			notice_yn ASC,
+			idx DESC,
+			insert_time DESC
+	</select>
+
+	<select id="selectBoardTotalCount" parameterType="com.example.projectA.model.BoardDTO" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			tb_board
+		WHERE
+			delete_yn = 'N'
+	</select>
+
+</mapper>
+

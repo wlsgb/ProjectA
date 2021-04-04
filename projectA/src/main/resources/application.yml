@@ -1,0 +1,45 @@
+server :
+  port : 80
+  
+spring :
+  application :
+    name : 'projectA'
+  profiles : 
+    active : local  devtools:
+    livereload : 
+      enabled : false 
+      
+  thymeleaf :
+    prefix : classpath:/templates/
+    cache : false
+    
+  jpa :
+    show-sql: true
+    generate-ddl : true
+    hibernate :
+      ddl-auto : create
+    
+    
+#mybatis :
+#  # mybatis mapper xml 위치
+#  mapper-locations : mappers/**/*.xml
+#  # mapper xml 사용 model위치
+#  type-aliases-package : com.example.projectA.*.model
+#  configuration : 
+#    map-underscore-to-camel-case : true
+      
+---    
+# Local 환경 설정
+spring :
+  profiles : local
+  datasource :
+    driver-class-name : com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url : jdbc:sqlserver://localhost:1433;databaseName=ProjectA
+    username : sa
+    password : rlawlsgb123!
+    hikari :
+      maximun-pool : 10
+      minimum-idle : 2
+    initialization-mode : never
+
+  
